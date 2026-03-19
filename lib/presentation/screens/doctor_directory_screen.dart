@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/models/doctor_model.dart';
-import '../../data/datasources/doctor_mock_data.dart';
 import '../../core/app_transitions.dart';
 import '../../core/app_routes.dart';
 import 'doctor_profile_screen.dart';
@@ -21,10 +21,7 @@ class _DoctorDirectoryScreenState extends State<DoctorDirectoryScreen> {
 
   void _handleBackPressed() {
     if (widget.backDashboardIndex != null) {
-      Navigator.of(context).pushReplacementNamed(
-        AppRoutes.dashboard,
-        arguments: widget.backDashboardIndex,
-      );
+      context.go('${AppRoutes.dashboard}?tab=${widget.backDashboardIndex!}');
       return;
     }
 
@@ -326,8 +323,6 @@ class _DoctorDirectoryScreenState extends State<DoctorDirectoryScreen> {
   }
 }
 
-
-
 class _SearchBar extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String) onChanged;
@@ -363,8 +358,6 @@ class _SearchBar extends StatelessWidget {
     );
   }
 }
-
-
 
 class _FilterChips extends StatelessWidget {
   final List<String> options;
@@ -445,8 +438,6 @@ class _FilterChips extends StatelessWidget {
     );
   }
 }
-
-
 
 class _DoctorListCard extends StatelessWidget {
   final DoctorModel doctor;
@@ -642,8 +633,6 @@ class _DoctorListCard extends StatelessWidget {
   }
 }
 
-
-
 class _EmptyState extends StatelessWidget {
   final String query;
   const _EmptyState({required this.query});
@@ -674,5 +663,3 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
-
-

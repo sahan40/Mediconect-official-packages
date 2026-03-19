@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../domain/models/doctor_model.dart';
-import '../../core/app_transitions.dart';
 
 class DoctorProfileScreen extends StatefulWidget {
   final DoctorModel doctor;
@@ -13,7 +12,6 @@ class DoctorProfileScreen extends StatefulWidget {
 
 class _DoctorProfileScreenState extends State<DoctorProfileScreen>
     with SingleTickerProviderStateMixin {
-
   late final TabController _tabController;
   late bool _isFavourite;
   DateTime? _selectedDate;
@@ -22,7 +20,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _isFavourite   = widget.doctor.isFavourite;
+    _isFavourite = widget.doctor.isFavourite;
   }
 
   @override
@@ -33,21 +31,22 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
 
   // ── Date picker ──────────────────────────────────────────
   Future<void> _pickDate() async {
-    final now    = DateTime.now();
+    final now = DateTime.now();
     final picked = await showDatePicker(
-      context:     context,
+      context: context,
       initialDate: now,
-      firstDate:   now,
-      lastDate:    DateTime(now.year + 1),
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary:   Color(0xFF1E9FD8),
-            onPrimary: Colors.white,
+      firstDate: now,
+      lastDate: DateTime(now.year + 1),
+      builder:
+          (context, child) => Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Color(0xFF1E9FD8),
+                onPrimary: Colors.white,
+              ),
+            ),
+            child: child!,
           ),
-        ),
-        child: child!,
-      ),
     );
     if (picked != null) setState(() => _selectedDate = picked);
   }
@@ -56,14 +55,34 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
     if (_selectedDate == null) {
       final now = DateTime.now();
       const months = [
-        'January','February','March','April','May','June',
-        'July','August','September','October','November','December',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ];
       return '${months[now.month - 1]} ${now.year}';
     }
     const months = [
-      'January','February','March','April','May','June',
-      'July','August','September','October','November','December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return '${months[_selectedDate!.month - 1]} ${_selectedDate!.year}';
   }
@@ -81,8 +100,11 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Colors.black87, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.black87,
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -101,16 +123,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
             },
             icon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 250),
-              transitionBuilder: (child, anim) =>
-                  ScaleTransition(scale: anim, child: child),
+              transitionBuilder:
+                  (child, anim) => ScaleTransition(scale: anim, child: child),
               child: Icon(
                 _isFavourite
                     ? Icons.favorite_rounded
                     : Icons.favorite_border_rounded,
                 key: ValueKey(_isFavourite),
-                color: _isFavourite
-                    ? Colors.red
-                    : Colors.black87,
+                color: _isFavourite ? Colors.red : Colors.black87,
                 size: 24,
               ),
             ),
@@ -155,9 +175,11 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.work_outline_rounded,
-                            size: 15,
-                            color: Colors.grey.shade500),
+                        Icon(
+                          Icons.work_outline_rounded,
+                          size: 15,
+                          color: Colors.grey.shade500,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           doc.experience,
@@ -172,9 +194,9 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
 
                     // ── Stats row ───────────────────────
                     _StatsRow(
-                      rating:       doc.rating.toString(),
-                      patients:     doc.patientCount,
-                      reviews:      doc.reviewCount,
+                      rating: doc.rating.toString(),
+                      patients: doc.patientCount,
+                      reviews: doc.reviewCount,
                     ),
                     const SizedBox(height: 24),
 
@@ -201,16 +223,13 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
 
                     // ── Select Date ─────────────────────
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
-                          const Divider(
-                              color: Color(0xFFEEF2F7), height: 1),
+                          const Divider(color: Color(0xFFEEF2F7), height: 1),
                           const SizedBox(height: 20),
                           Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
                                 'Select Date',
@@ -238,8 +257,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
                           // Date selector strip
                           _DateStrip(
                             selectedDate: _selectedDate,
-                            onDateSelected: (d) =>
-                                setState(() => _selectedDate = d),
+                            onDateSelected:
+                                (d) => setState(() => _selectedDate = d),
                           ),
                           const SizedBox(height: 24),
                         ],
@@ -252,14 +271,12 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
 
             // ── Bottom fee + confirm bar ───────────────
             _BottomBar(
-              fee:         doc.consultationFee,
+              fee: doc.consultationFee,
               durationMins: doc.durationMins,
-              onConfirm:   () {
+              onConfirm: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                      'Appointment confirmed with ${doc.name}!',
-                    ),
+                    content: Text('Appointment confirmed with ${doc.name}!'),
                     backgroundColor: const Color(0xFF1E9FD8),
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
@@ -275,8 +292,6 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen>
     );
   }
 }
-
-
 
 class _DoctorAvatar extends StatelessWidget {
   final Color bgColor;
@@ -304,16 +319,10 @@ class _DoctorAvatar extends StatelessWidget {
           ),
         ],
       ),
-      child: const Icon(
-        Icons.person,
-        size: 64,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.person, size: 64, color: Colors.white),
     );
   }
 }
-
-
 
 class _StatsRow extends StatelessWidget {
   final String rating;
@@ -332,15 +341,11 @@ class _StatsRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          _StatBox(
-            value: rating,
-            label: 'RATING',
-            isRating: true,
-          ),
+          _StatBox(value: rating, label: 'RATING', isRating: true),
           const SizedBox(width: 12),
           _StatBox(value: patients, label: 'PATIENTS'),
           const SizedBox(width: 12),
-          _StatBox(value: reviews,  label: 'REVIEWS'),
+          _StatBox(value: reviews, label: 'REVIEWS'),
         ],
       ),
     );
@@ -362,17 +367,11 @@ class _StatBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 14,
-          horizontal: 8,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: const Color(0xFFE8EDF2),
-            width: 1.5,
-          ),
+          border: Border.all(color: const Color(0xFFE8EDF2), width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
@@ -421,8 +420,6 @@ class _StatBox extends StatelessWidget {
   }
 }
 
-
-
 class _ProfileTabBar extends StatelessWidget {
   final TabController controller;
   const _ProfileTabBar({required this.controller});
@@ -433,10 +430,7 @@ class _ProfileTabBar extends StatelessWidget {
       controller: controller,
       labelColor: const Color(0xFF1E9FD8),
       unselectedLabelColor: Colors.grey.shade500,
-      labelStyle: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w700,
-      ),
+      labelStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
       unselectedLabelStyle: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w500,
@@ -453,8 +447,6 @@ class _ProfileTabBar extends StatelessWidget {
     );
   }
 }
-
-
 
 class _BiographyTab extends StatelessWidget {
   final String bio;
@@ -476,8 +468,6 @@ class _BiographyTab extends StatelessWidget {
   }
 }
 
-
-
 class _EducationTab extends StatelessWidget {
   final List<String> items;
   const _EducationTab({required this.items});
@@ -487,41 +477,41 @@ class _EducationTab extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
       child: Column(
-        children: items.map((item) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.only(top: 6),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF1E9FD8),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                      height: 1.5,
+        children:
+            items.map((item) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.only(top: 6),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFF1E9FD8),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
 }
-
 
 class _ReviewsTab extends StatelessWidget {
   final List<DoctorReview> reviews;
@@ -540,10 +530,7 @@ class _ReviewsTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFF7F9FC),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFFE8EDF2),
-              width: 1,
-            ),
+            border: Border.all(color: const Color(0xFFE8EDF2), width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -561,8 +548,11 @@ class _ReviewsTab extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded,
-                          color: Color(0xFFFFB300), size: 14),
+                      const Icon(
+                        Icons.star_rounded,
+                        color: Color(0xFFFFB300),
+                        size: 14,
+                      ),
                       const SizedBox(width: 3),
                       Text(
                         r.rating.toString(),
@@ -588,10 +578,7 @@ class _ReviewsTab extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 r.date,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.grey.shade400,
-                ),
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade400),
               ),
             ],
           ),
@@ -601,25 +588,18 @@ class _ReviewsTab extends StatelessWidget {
   }
 }
 
-
 class _DateStrip extends StatelessWidget {
   final DateTime? selectedDate;
   final void Function(DateTime) onDateSelected;
 
-  const _DateStrip({
-    required this.selectedDate,
-    required this.onDateSelected,
-  });
+  const _DateStrip({required this.selectedDate, required this.onDateSelected});
 
   @override
   Widget build(BuildContext context) {
-    final now   = DateTime.now();
-    final dates = List.generate(
-      10,
-      (i) => now.add(Duration(days: i)),
-    );
+    final now = DateTime.now();
+    final dates = List.generate(10, (i) => now.add(Duration(days: i)));
 
-    const dayLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return SizedBox(
       height: 72,
@@ -628,11 +608,12 @@ class _DateStrip extends StatelessWidget {
         itemCount: dates.length,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (_, i) {
-          final date     = dates[i];
-          final isSelected = selectedDate != null &&
-              selectedDate!.day   == date.day &&
+          final date = dates[i];
+          final isSelected =
+              selectedDate != null &&
+              selectedDate!.day == date.day &&
               selectedDate!.month == date.month &&
-              selectedDate!.year  == date.year;
+              selectedDate!.year == date.year;
           final dayLabel = dayLabels[date.weekday - 1];
 
           return GestureDetector(
@@ -641,20 +622,21 @@ class _DateStrip extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               width: 52,
               decoration: BoxDecoration(
-                color: isSelected
-                    ? const Color(0xFF1E9FD8)
-                    : const Color(0xFFF2F5F8),
+                color:
+                    isSelected
+                        ? const Color(0xFF1E9FD8)
+                        : const Color(0xFFF2F5F8),
                 borderRadius: BorderRadius.circular(14),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: const Color(0xFF1E9FD8)
-                              .withOpacity(0.35),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
-                    : [],
+                boxShadow:
+                    isSelected
+                        ? [
+                          BoxShadow(
+                            color: const Color(0xFF1E9FD8).withOpacity(0.35),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
+                        : [],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -664,9 +646,10 @@ class _DateStrip extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? Colors.white.withOpacity(0.85)
-                          : Colors.grey.shade500,
+                      color:
+                          isSelected
+                              ? Colors.white.withOpacity(0.85)
+                              : Colors.grey.shade500,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -675,9 +658,7 @@ class _DateStrip extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
-                      color: isSelected
-                          ? Colors.white
-                          : Colors.black87,
+                      color: isSelected ? Colors.white : Colors.black87,
                     ),
                   ),
                 ],
@@ -689,8 +670,6 @@ class _DateStrip extends StatelessWidget {
     );
   }
 }
-
-
 
 class _BottomBar extends StatelessWidget {
   final double consultationFee;
@@ -731,10 +710,7 @@ class _BottomBar extends StatelessWidget {
                 children: [
                   Text(
                     'Consultation Fee',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade500,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -752,10 +728,7 @@ class _BottomBar extends StatelessWidget {
                 children: [
                   Text(
                     'Duration',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade500,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                   ),
                   const SizedBox(height: 2),
                   Text(

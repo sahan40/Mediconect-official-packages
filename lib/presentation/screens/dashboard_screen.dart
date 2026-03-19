@@ -6,6 +6,7 @@ import '../widgets/main_bottom_nav.dart';
 import 'doctor_profile_screen.dart';
 import 'doctor_directory_screen.dart';
 import 'profile_screen.dart';
+import 'appointments_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int initialIndex;
@@ -18,16 +19,16 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _currentIndex;
-
-  final List<Widget> _pages = const [
-    _HomeTab(),
-    _PlaceholderTab(label: 'Schedule'),
-    DoctorDirectoryScreen(backDashboardIndex: 0),
-  ];
+  late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
+    _pages = [
+      const _HomeTab(),
+      AppointmentsScreen(onBackToDashboard: () => _onBottomNavTap(0)),
+      const DoctorDirectoryScreen(backDashboardIndex: 0),
+    ];
     _currentIndex =
         widget.initialIndex >= 0 && widget.initialIndex < _pages.length
             ? widget.initialIndex
@@ -64,8 +65,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-
-
 class _HomeTab extends StatelessWidget {
   const _HomeTab();
 
@@ -76,18 +75,15 @@ class _HomeTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             const _TopBar(),
             const SizedBox(height: 16),
 
-            
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: _AppointmentCard(),
             ),
             const SizedBox(height: 28),
 
-            
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: _SectionTitle(text: 'Quick Actions'),
@@ -99,7 +95,6 @@ class _HomeTab extends StatelessWidget {
             ),
             const SizedBox(height: 28),
 
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -142,7 +137,6 @@ class _HomeTab extends StatelessWidget {
     );
   }
 }
-
 
 class _TopBar extends StatelessWidget {
   const _TopBar();
@@ -259,8 +253,6 @@ class _TopBar extends StatelessWidget {
   }
 }
 
-
-
 class _AppointmentCard extends StatelessWidget {
   const _AppointmentCard();
 
@@ -281,7 +273,6 @@ class _AppointmentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           Stack(
             children: [
               Container(
@@ -486,7 +477,6 @@ class _AppointmentCard extends StatelessWidget {
   }
 }
 
-
 class _CorridorPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -599,7 +589,6 @@ class _CorridorPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-
 class _QuickActions extends StatelessWidget {
   const _QuickActions();
 
@@ -702,8 +691,6 @@ class _QuickActionItem {
   });
 }
 
-
-
 class _DoctorsRow extends StatelessWidget {
   const _DoctorsRow();
 
@@ -723,8 +710,6 @@ class _DoctorsRow extends StatelessWidget {
     );
   }
 }
-
-
 
 class _DoctorCard extends StatelessWidget {
   final DoctorModel doctor;
@@ -822,8 +807,6 @@ class _DoctorCard extends StatelessWidget {
   }
 }
 
-
-
 class _FeedbackBanner extends StatelessWidget {
   const _FeedbackBanner();
 
@@ -895,7 +878,6 @@ class _FeedbackBanner extends StatelessWidget {
   }
 }
 
-
 class _SectionTitle extends StatelessWidget {
   final String text;
   const _SectionTitle({required this.text});
@@ -913,8 +895,6 @@ class _SectionTitle extends StatelessWidget {
     );
   }
 }
-
-
 
 class _PlaceholderTab extends StatelessWidget {
   final String label;

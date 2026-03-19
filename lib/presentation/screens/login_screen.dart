@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
 import '../../core/app_dimensions.dart';
 import '../../core/app_routes.dart';
 import '../state/login_provider.dart';
 import '../state/login_state.dart';
-import '../state/signup_provider.dart' show SignupStateManager;
 import '../widgets/login_widgets.dart';
-import '../screens/signup_screen.dart';
-import '../../core/app_transitions.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       password: _passwordController.text,
     );
     if (success && mounted) {
-      Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+      context.go(AppRoutes.dashboard);
     }
   }
 
@@ -128,10 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap:
-                      () => Navigator.of(
-                        context,
-                      ).pushNamed(AppRoutes.forgotPassword),
+                  onTap: () => context.push(AppRoutes.forgotPassword),
                   child: const Text(
                     'Forgot Password?',
                     style: AppTextStyles.link,
@@ -152,14 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
               const LabelledDivider(label: 'or sign in with'),
               const SizedBox(height: 24),
 
-             
-             
-
               SignUpFooter(
                 onSignUpTap: () {
-                  Navigator.of(context).push(
-                    AppTransitions.swapRoute(const SignupStateManager(child: SignupScreen())),
-                  );
+                  context.push(AppRoutes.signup);
                 },
               ),
               const SizedBox(height: AppDimensions.paddingL),
@@ -208,5 +198,3 @@ class _ErrorBanner extends StatelessWidget {
     );
   }
 }
-
-

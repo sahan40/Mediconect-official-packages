@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'medical_history_screen.dart';
-import '../state/medical_history_provider.dart';
-import '../../core/app_colors.dart';
-import '../../core/app_text_styles.dart';
-import '../../core/app_dimensions.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/app_routes.dart';
 import '../state/signup_provider.dart';
 import '../state/signup_state.dart';
-import '../../core/app_transitions.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -72,13 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final ok = await state.submitStep();
     if (ok && mounted) {
-      Navigator.of(context).push(
-        AppTransitions.swapRoute(
-          const MedicalHistoryStateManager(
-            child: MedicalHistoryScreen(),
-          ),
-        ),
-      );
+      context.push(AppRoutes.medicalHistory);
     }
   }
 

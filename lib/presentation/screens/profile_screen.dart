@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/app_transitions.dart';
 import '../../core/app_routes.dart';
@@ -24,9 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _handleBottomNavTap(int index) {
     if (index == 3) return;
 
-    Navigator.of(
-      context,
-    ).pushReplacementNamed(AppRoutes.dashboard, arguments: index);
+    context.go('${AppRoutes.dashboard}?tab=$index');
   }
 
   void _handleBackPressed() {
@@ -40,7 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).maybePop();
   }
 
-  
   void _showLogoutDialog() {
     showDialog(
       context: context,
@@ -103,9 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           onPressed: () {
                             Navigator.pop(ctx);
-                            Navigator.of(
-                              context,
-                            ).pushNamedAndRemoveUntil('/login', (_) => false);
+                            context.go(AppRoutes.login);
                           },
                           child: const Text(
                             'Logout',
@@ -130,7 +126,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F5F8),
 
-      
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -177,11 +172,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               _ProfileHeader(),
               const SizedBox(height: 8),
 
-              
               _SectionLabel(text: 'PERSONAL INFORMATION'),
               Container(
                 color: Colors.white,
@@ -215,7 +208,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 8),
 
-              
               _SectionLabel(text: 'EMERGENCY CONTACT'),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -223,7 +215,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 8),
 
-              
               _SectionLabel(text: 'ACCOUNT & SETTINGS'),
               Container(
                 color: Colors.white,
@@ -254,7 +245,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 8),
 
-              
               Container(
                 color: Colors.white,
                 width: double.infinity,
@@ -266,7 +256,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
 
-      
       bottomNavigationBar:
           widget.showBottomNavigationBar
               ? MainBottomNav(currentIndex: 3, onTap: _handleBottomNavTap)
@@ -274,8 +263,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-
 
 class _ProfileHeader extends StatelessWidget {
   @override
@@ -286,7 +273,6 @@ class _ProfileHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 28),
       child: Column(
         children: [
-          
           Stack(
             children: [
               Container(
@@ -375,8 +361,6 @@ class _ProfileHeader extends StatelessWidget {
   }
 }
 
-
-
 class _SectionLabel extends StatelessWidget {
   final String text;
   const _SectionLabel({required this.text});
@@ -399,8 +383,6 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
-
-
 
 class _InfoRow extends StatelessWidget {
   final IconData icon;
@@ -463,8 +445,6 @@ class _InfoRow extends StatelessWidget {
     );
   }
 }
-
-
 
 class _EmergencyContactCard extends StatelessWidget {
   @override
@@ -554,8 +534,6 @@ class _EmergencyContactCard extends StatelessWidget {
   }
 }
 
-
-
 class _SettingsRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -602,8 +580,6 @@ class _SettingsRow extends StatelessWidget {
   }
 }
 
-
-
 class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -613,8 +589,6 @@ class _Divider extends StatelessWidget {
     );
   }
 }
-
-
 
 class _LogoutButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -649,5 +623,3 @@ class _LogoutButton extends StatelessWidget {
     );
   }
 }
-
-

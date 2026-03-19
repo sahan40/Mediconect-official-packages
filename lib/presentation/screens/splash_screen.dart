@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../core/app_colors.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,17 +12,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-
-  
   late final AnimationController _iconController;
   late final AnimationController _textController;
 
-  
   late final Animation<double> _iconScale;
   late final Animation<double> _iconOpacity;
   late final Animation<double> _glowOpacity;
 
-  
   late final Animation<double> _textOpacity;
   late final Animation<Offset> _textSlide;
 
@@ -67,24 +63,23 @@ class _SplashScreenState extends State<SplashScreen>
     _glowOpacity = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 50),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.6), weight: 50),
-    ]).animate(CurvedAnimation(
-      parent: _iconController,
-      curve: Curves.easeInOut,
-    ));
+    ]).animate(
+      CurvedAnimation(parent: _iconController, curve: Curves.easeInOut),
+    );
 
     // Text slide up: offset(0, 0.3) → offset(0, 0)
     _textSlide = Tween<Offset>(
       begin: const Offset(0, 0.3),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _textController, curve: Curves.easeOutCubic),
+    );
 
     // Text fade-in: 0 → 1
-    _textOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _textController, curve: Curves.easeIn),
-    );
+    _textOpacity = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeIn));
 
     _startSequence();
   }
@@ -107,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 2000));
     if (!mounted) return;
 
-    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+    context.go(AppRoutes.login);
   }
 
   @override
@@ -129,8 +124,6 @@ class _SplashScreenState extends State<SplashScreen>
           height: double.infinity,
           child: Column(
             children: [
-
-              
               SizedBox(height: size.height * 0.28),
 
               // ── Animated icon card ──────────────────────────
@@ -156,10 +149,7 @@ class _SplashScreenState extends State<SplashScreen>
                 builder: (context, child) {
                   return Opacity(
                     opacity: _textOpacity.value,
-                    child: SlideTransition(
-                      position: _textSlide,
-                      child: child,
-                    ),
+                    child: SlideTransition(position: _textSlide, child: child),
                   );
                 },
                 child: const _TextBlock(),
@@ -179,8 +169,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-
-
 class _IconCard extends StatelessWidget {
   final double glowOpacity;
   const _IconCard({required this.glowOpacity});
@@ -193,7 +181,6 @@ class _IconCard extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-
           // ── Outer cyan glow ───────────────────────────────
           Opacity(
             opacity: glowOpacity * 0.25,
@@ -283,31 +270,31 @@ class _IconCard extends StatelessWidget {
   }
 }
 
-
 class _HeartbeatLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2.8
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..style = PaintingStyle.stroke;
+    final paint =
+        Paint()
+          ..color = Colors.white
+          ..strokeWidth = 2.8
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..style = PaintingStyle.stroke;
 
     final w = size.width;
     final h = size.height;
     final midY = h / 2;
 
-    
-    final path = Path()
-      ..moveTo(0, midY)
-      ..lineTo(w * 0.28, midY)
-      ..lineTo(w * 0.38, midY - h * 0.85)
-      ..lineTo(w * 0.48, midY + h * 0.75)
-      ..lineTo(w * 0.58, midY)
-      ..lineTo(w * 0.68, midY - h * 0.3)
-      ..lineTo(w * 0.75, midY)
-      ..lineTo(w, midY);
+    final path =
+        Path()
+          ..moveTo(0, midY)
+          ..lineTo(w * 0.28, midY)
+          ..lineTo(w * 0.38, midY - h * 0.85)
+          ..lineTo(w * 0.48, midY + h * 0.75)
+          ..lineTo(w * 0.58, midY)
+          ..lineTo(w * 0.68, midY - h * 0.3)
+          ..lineTo(w * 0.75, midY)
+          ..lineTo(w, midY);
 
     canvas.drawPath(path, paint);
   }
@@ -315,8 +302,6 @@ class _HeartbeatLinePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-
 
 class _TextBlock extends StatelessWidget {
   const _TextBlock();
@@ -351,15 +336,11 @@ class _TextBlock extends StatelessWidget {
   }
 }
 
-
 class _PageDots extends StatelessWidget {
   final int activeDot;
   final int totalDots;
 
-  const _PageDots({
-    required this.activeDot,
-    required this.totalDots,
-  });
+  const _PageDots({required this.activeDot, required this.totalDots});
 
   @override
   Widget build(BuildContext context) {
@@ -374,9 +355,7 @@ class _PageDots extends StatelessWidget {
           height: isActive ? 10 : 8,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isActive
-                ? const Color(0xFF1E9FD8)
-                : const Color(0xFFCDE8F5),
+            color: isActive ? const Color(0xFF1E9FD8) : const Color(0xFFCDE8F5),
           ),
         );
       }),

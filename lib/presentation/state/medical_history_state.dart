@@ -30,10 +30,10 @@ class MedicalHistoryState extends ChangeNotifier {
     );
   }
 
-  MedicalHistoryModel  get form         => _form;
-  MedicalHistoryStatus get status       => _status;
-  String?              get errorMessage => _errorMessage;
-  bool                 get isLoading    => _status == MedicalHistoryStatus.loading;
+  MedicalHistoryModel get form => _form;
+  MedicalHistoryStatus get status => _status;
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _status == MedicalHistoryStatus.loading;
 
   // ── Chronic Conditions ──────────────────────────────────
   void toggleCondition(String condition) {
@@ -60,25 +60,25 @@ class MedicalHistoryState extends ChangeNotifier {
     return _form.chronicConditions.contains(condition);
   }
 
-  
   void updatePastSurgeries(String value) {
     _form = _form.copyWith(pastSurgeries: value);
     notifyListeners();
   }
 
- 
   void addMedication({
     required String name,
     required String dosage,
     required String frequency,
   }) {
     final updated = List<MedicationItem>.from(_form.medications);
-    updated.add(MedicationItem(
-      id:        DateTime.now().millisecondsSinceEpoch.toString(),
-      name:      name,
-      dosage:    dosage,
-      frequency: frequency,
-    ));
+    updated.add(
+      MedicationItem(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: name,
+        dosage: dosage,
+        frequency: frequency,
+      ),
+    );
     _form = _form.copyWith(medications: updated);
     notifyListeners();
   }
@@ -91,6 +91,27 @@ class MedicalHistoryState extends ChangeNotifier {
 
   // ── Submit ───────────────────────────────────────────────
   Future<bool> submitStep() async {
+    if (_form.chronicConditions.isEmpty) {
+      _errorMessage = 'Please select at least one condition.';
+      _status = MedicalHistoryStatus.error;
+      notifyListeners();
+      return false;
+    }
+
+    if (_form.pastSurgeries.trim().isEmpty) {
+      _errorMessage = 'Please enter past surgeries or hospitalizations.';
+      _status = MedicalHistoryStatus.error;
+      notifyListeners();
+      return false;
+    }
+
+    if (_form.medications.isEmpty) {
+      _errorMessage = 'Please add at least one medication.';
+      _status = MedicalHistoryStatus.error;
+      notifyListeners();
+      return false;
+    }
+
     _status = MedicalHistoryStatus.loading;
     _errorMessage = null;
     notifyListeners();

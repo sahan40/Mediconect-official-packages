@@ -138,3 +138,46 @@ This codebase supports a research study comparing official and third-party Flutt
 - Security exposure
 - Performance impact
 - Maintainability and long-term stability
+
+## FHIR Integration Environment Setup
+
+Use these steps to prepare local development for FHIR server integration.
+
+### 1. Install dependencies
+
+```bash
+flutter pub get
+```
+
+### 2. Run app with FHIR configuration
+
+```bash
+flutter run \
+  --dart-define=FHIR_BASE_URL=https://your-fhir-server/fhir \
+  --dart-define=FHIR_AUTH_BASE_URL=https://your-auth-server \
+  --dart-define=FHIR_CLIENT_ID=medi-connect-mobile \
+  --dart-define=FHIR_REDIRECT_URI=com.medi.connect://oauth-callback \
+  --dart-define=FHIR_SCOPE="openid profile offline_access patient/*.read" \
+  --dart-define=FHIR_USE_HTTPS=true
+```
+
+### 3. Verify environment keys
+
+`FhirEnvironment` in `lib/core/config/fhir_environment.dart` exposes:
+
+- `isConfigured`
+- `missingKeys`
+
+Use these before enabling production authentication logic.
+
+### 4. Available FHIR scaffolding
+
+- `lib/core/network/fhir_http_client.dart`
+- `lib/data/datasources/auth_secure_token_datasource.dart`
+- `lib/data/datasources/fhir/fhir_metadata_remote_datasource.dart`
+- `lib/data/datasources/fhir/fhir_patient_remote_datasource.dart`
+
+### 5. Next milestone
+
+Implement SMART on FHIR OAuth2 PKCE login and inject the resulting access token
+into `FhirHttpClient`.

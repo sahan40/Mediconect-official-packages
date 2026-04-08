@@ -4,11 +4,7 @@ import 'login_state.dart';
 class LoginProvider extends InheritedWidget {
   final LoginState state;
 
-  const LoginProvider({
-    super.key,
-    required this.state,
-    required super.child,
-  });
+  const LoginProvider({super.key, required this.state, required super.child});
 
   static LoginProvider of(BuildContext context) {
     final provider =
@@ -18,8 +14,7 @@ class LoginProvider extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(LoginProvider oldWidget) =>
-      oldWidget.state != state;
+  bool updateShouldNotify(LoginProvider oldWidget) => true;
 }
 
 class LoginStateManager extends StatefulWidget {
@@ -51,9 +46,6 @@ class _LoginStateManagerState extends State<LoginStateManager> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginProvider(
-      state: _loginState,
-      child: widget.child,
-    );
+    return LoginProvider(state: _loginState, child: widget.child);
   }
 }

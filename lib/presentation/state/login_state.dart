@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../domain/models/user_model.dart';
 import '../../domain/services/auth_service.dart';
 import '../../domain/services/validation_service.dart';
-import '../../data/repositories/auth_repository.dart';
+import '../../data/repositories/keycloak_auth_repository.dart';
 
 enum LoginStatus { idle, loading, success, error }
 
@@ -10,18 +10,18 @@ class LoginState extends ChangeNotifier {
   final AuthService _authService;
 
   LoginState({AuthService? authService})
-      : _authService = authService ?? AuthRepository();
+    : _authService = authService ?? KeycloakAuthRepository();
 
-  LoginStatus _status          = LoginStatus.idle;
-  bool        _obscurePassword = true;
-  String?     _errorMessage;
-  UserModel?  _user;
+  LoginStatus _status = LoginStatus.idle;
+  bool _obscurePassword = true;
+  String? _errorMessage;
+  UserModel? _user;
 
-  LoginStatus get status          => _status;
-  bool        get obscurePassword => _obscurePassword;
-  String?     get errorMessage    => _errorMessage;
-  UserModel?  get user            => _user;
-  bool        get isLoading       => _status == LoginStatus.loading;
+  LoginStatus get status => _status;
+  bool get obscurePassword => _obscurePassword;
+  String? get errorMessage => _errorMessage;
+  UserModel? get user => _user;
+  bool get isLoading => _status == LoginStatus.loading;
 
   void togglePasswordVisibility() {
     _obscurePassword = !_obscurePassword;
@@ -64,7 +64,7 @@ class LoginState extends ChangeNotifier {
     );
 
     if (result.success) {
-      _user   = result.user;
+      _user = result.user;
       _status = LoginStatus.success;
       notifyListeners();
       return true;

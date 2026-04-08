@@ -143,10 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 28),
 
-              // Divider
-              const LabelledDivider(label: 'or sign in with'),
-              const SizedBox(height: 24),
-
               SignUpFooter(
                 onSignUpTap: () {
                   context.push(AppRoutes.signup);

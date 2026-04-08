@@ -1,6 +1,7 @@
 class SignupModel {
   final String fullName;
   final DateTime? dateOfBirth;
+  final String password;
   final String bloodType;
   final String knownAllergies;
   final String contactName;
@@ -9,6 +10,7 @@ class SignupModel {
   const SignupModel({
     this.fullName = '',
     this.dateOfBirth,
+    this.password = '',
     this.bloodType = 'A+',
     this.knownAllergies = '',
     this.contactName = '',
@@ -18,18 +20,20 @@ class SignupModel {
   SignupModel copyWith({
     String? fullName,
     DateTime? dateOfBirth,
+    String? password,
     String? bloodType,
     String? knownAllergies,
     String? contactName,
     String? relationship,
   }) {
     return SignupModel(
-      fullName:        fullName        ?? this.fullName,
-      dateOfBirth:     dateOfBirth     ?? this.dateOfBirth,
-      bloodType:       bloodType       ?? this.bloodType,
-      knownAllergies:  knownAllergies  ?? this.knownAllergies,
-      contactName:     contactName     ?? this.contactName,
-      relationship:    relationship    ?? this.relationship,
+      fullName: fullName ?? this.fullName,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      password: password ?? this.password,
+      bloodType: bloodType ?? this.bloodType,
+      knownAllergies: knownAllergies ?? this.knownAllergies,
+      contactName: contactName ?? this.contactName,
+      relationship: relationship ?? this.relationship,
     );
   }
 }

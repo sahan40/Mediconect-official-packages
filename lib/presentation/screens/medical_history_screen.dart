@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/app_transitions.dart';
+import 'package:go_router/go_router.dart';
+import '../../core/app_routes.dart';
 import '../state/medical_history_provider.dart';
 import '../state/medical_history_state.dart';
 import '../../domain/models/medical_history_model.dart';
@@ -38,7 +39,6 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
     super.dispose();
   }
 
-  
   void _showAddMedicationDialog(MedicalHistoryState state) {
     final nameCtrl = TextEditingController();
     final dosageCtrl = TextEditingController();
@@ -46,75 +46,82 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text(
-          'Add Medication',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _DialogField(controller: nameCtrl, hint: 'Medication name'),
-            const SizedBox(height: 12),
-            _DialogField(controller: dosageCtrl, hint: 'Dosage (e.g. 500mg)'),
-            const SizedBox(height: 12),
-            _DialogField(
-              controller: frequencyCtrl,
-              hint: 'Frequency (e.g. Twice daily)',
+      builder:
+          (ctx) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child:
-                Text('Cancel', style: TextStyle(color: Colors.grey.shade600)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1E9FD8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+            title: const Text(
+              'Add Medication',
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _DialogField(controller: nameCtrl, hint: 'Medication name'),
+                const SizedBox(height: 12),
+                _DialogField(
+                  controller: dosageCtrl,
+                  hint: 'Dosage (e.g. 500mg)',
+                ),
+                const SizedBox(height: 12),
+                _DialogField(
+                  controller: frequencyCtrl,
+                  hint: 'Frequency (e.g. Twice daily)',
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
               ),
-            ),
-            onPressed: () {
-              if (nameCtrl.text.trim().isNotEmpty) {
-                state.addMedication(
-                  name: nameCtrl.text.trim(),
-                  dosage: dosageCtrl.text.trim(),
-                  frequency: frequencyCtrl.text.trim(),
-                );
-              }
-              Navigator.pop(ctx);
-            },
-            child: const Text(
-              'Add',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1E9FD8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  if (nameCtrl.text.trim().isNotEmpty) {
+                    state.addMedication(
+                      name: nameCtrl.text.trim(),
+                      dosage: dosageCtrl.text.trim(),
+                      frequency: frequencyCtrl.text.trim(),
+                    );
+                  }
+                  Navigator.pop(ctx);
+                },
+                child: const Text(
+                  'Add',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
-  
   Future<void> _handleNext(MedicalHistoryState state) async {
     FocusScope.of(context).unfocus();
     state.updatePastSurgeries(_surgeriesController.text);
 
     final ok = await state.submitStep();
-    if (ok && mounted) {
-      Navigator.of(context).push(
-        AppTransitions.swapRoute(
-          const _PlaceholderInsuranceScreen(),
-        ),
-      );
+    if (!mounted) return;
+
+    if (ok) {
+      context.go(AppRoutes.login);
+    } else if (state.errorMessage != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
     }
   }
 
@@ -129,8 +136,7 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      
-            appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -165,7 +171,6 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                   children: [
                     const SizedBox(height: 16),
 
-                    
                     const _StepProgress(
                       stepLabel: 'Registration Progress',
                       stepText: 'Step 2 of 2',
@@ -173,13 +178,14 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                     ),
                     const SizedBox(height: 28),
 
-                    
                     const _SectionHeader(text: 'Chronic Conditions'),
                     const SizedBox(height: 4),
                     Text(
                       'Select all that apply to you.',
-                      style:
-                          TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                     const SizedBox(height: 10),
 
@@ -191,18 +197,14 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                           horizontal: 12,
                           vertical: 6,
                         ),
-                        
-                  
                       ),
 
-                    
                     _ConditionChips(
                       conditions: _conditions,
                       onToggle: state.toggleCondition,
                     ),
                     const SizedBox(height: 32),
 
-                    
                     const _SectionHeader(
                       text: 'Past Surgeries or Hospitalizations',
                     ),
@@ -210,7 +212,6 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                     _SurgeriesTextArea(controller: _surgeriesController),
                     const SizedBox(height: 32),
 
-                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -219,8 +220,11 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
                           onTap: () => _showAddMedicationDialog(state),
                           child: const Row(
                             children: [
-                              Icon(Icons.add,
-                                  color: Color(0xFF1E9FD8), size: 18),
+                              Icon(
+                                Icons.add,
+                                color: Color(0xFF1E9FD8),
+                                size: 18,
+                              ),
                               SizedBox(width: 2),
                               Text(
                                 'Add New',
@@ -262,7 +266,6 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
               ),
             ),
 
-            
             _BottomNavButtons(
               isLoading: state.isLoading,
               onPrevious: () => Navigator.of(context).pop(),
@@ -274,8 +277,6 @@ class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
     );
   }
 }
-
-
 
 class _StepProgress extends StatelessWidget {
   final String stepLabel;
@@ -320,16 +321,13 @@ class _StepProgress extends StatelessWidget {
             value: progress,
             minHeight: 6,
             backgroundColor: Colors.grey.shade200,
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(Color(0xFF1E9FD8)),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1E9FD8)),
           ),
         ),
       ],
     );
   }
 }
-
-
 
 class _SectionHeader extends StatelessWidget {
   final String text;
@@ -349,44 +347,33 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-
-
 class _ConditionChips extends StatelessWidget {
   final List<String> conditions;
   final void Function(String) onToggle;
 
-  const _ConditionChips({
-    required this.conditions,
-    required this.onToggle,
-  });
+  const _ConditionChips({required this.conditions, required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: 10,
       runSpacing: 10,
-      children: conditions
-          .map(
-            (condition) => _ConditionChip(
-              label: condition,
-              onToggle: onToggle,
-            ),
-          )
-          .toList(),
+      children:
+          conditions
+              .map(
+                (condition) =>
+                    _ConditionChip(label: condition, onToggle: onToggle),
+              )
+              .toList(),
     );
   }
 }
-
-
 
 class _ConditionChip extends StatefulWidget {
   final String label;
   final void Function(String) onToggle;
 
-  const _ConditionChip({
-    required this.label,
-    required this.onToggle,
-  });
+  const _ConditionChip({required this.label, required this.onToggle});
 
   @override
   State<_ConditionChip> createState() => _ConditionChipState();
@@ -406,10 +393,7 @@ class _ConditionChipState extends State<_ConditionChip>
       reverseDuration: const Duration(milliseconds: 100),
     );
     _scaleAnim = Tween<double>(begin: 1.0, end: 0.93).animate(
-      CurvedAnimation(
-        parent: _animController,
-        curve: Curves.easeInOut,
-      ),
+      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
     );
   }
 
@@ -449,21 +433,22 @@ class _ConditionChipState extends State<_ConditionChip>
                   selected ? const Color(0xFF1E9FD8) : const Color(0xFFDDE3ED),
               width: 1.5,
             ),
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFF1E9FD8).withOpacity(0.30),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
+            boxShadow:
+                selected
+                    ? [
+                      BoxShadow(
+                        color: const Color(0xFF1E9FD8).withOpacity(0.30),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                    : [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -471,16 +456,20 @@ class _ConditionChipState extends State<_ConditionChip>
               AnimatedSize(
                 duration: const Duration(milliseconds: 180),
                 curve: Curves.easeInOut,
-                child: selected
-                    ? const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.check_circle_outline_outlined,
-                              color: Colors.white, size: 15),
-                          SizedBox(width: 5),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
+                child:
+                    selected
+                        ? const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.check_circle_outline_outlined,
+                              color: Colors.white,
+                              size: 15,
+                            ),
+                            SizedBox(width: 5),
+                          ],
+                        )
+                        : const SizedBox.shrink(),
               ),
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 220),
@@ -498,8 +487,6 @@ class _ConditionChipState extends State<_ConditionChip>
     );
   }
 }
-
-
 
 class _SurgeriesTextArea extends StatelessWidget {
   final TextEditingController controller;
@@ -519,7 +506,8 @@ class _SurgeriesTextArea extends StatelessWidget {
         keyboardType: TextInputType.multiline,
         style: const TextStyle(fontSize: 14, color: Colors.black87),
         decoration: InputDecoration(
-          hintText: 'Please list any major surgeries or hospitalizations\n'
+          hintText:
+              'Please list any major surgeries or hospitalizations\n'
               'and the approximate dates...',
           hintStyle: TextStyle(
             fontSize: 14,
@@ -536,16 +524,11 @@ class _SurgeriesTextArea extends StatelessWidget {
   }
 }
 
-
-
 class _MedicationCard extends StatelessWidget {
   final MedicationItem medication;
   final VoidCallback onDelete;
 
-  const _MedicationCard({
-    required this.medication,
-    required this.onDelete,
-  });
+  const _MedicationCard({required this.medication, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -574,16 +557,18 @@ class _MedicationCard extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   medication.subtitle,
-                  style:
-                      TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
                 ),
               ],
             ),
           ),
           IconButton(
             onPressed: onDelete,
-            icon: Icon(Icons.delete_outline_rounded,
-                color: Colors.grey.shade400, size: 22),
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              color: Colors.grey.shade400,
+              size: 22,
+            ),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -592,8 +577,6 @@ class _MedicationCard extends StatelessWidget {
     );
   }
 }
-
-
 
 class _BottomNavButtons extends StatelessWidget {
   final bool isLoading;
@@ -622,8 +605,7 @@ class _BottomNavButtons extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(14),
-                  border:
-                      Border.all(color: Colors.grey.shade200, width: 1.5),
+                  border: Border.all(color: Colors.grey.shade200, width: 1.5),
                 ),
                 child: const Center(
                   child: Text(
@@ -669,23 +651,24 @@ class _BottomNavButtons extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2.5,
+                  child:
+                      isLoading
+                          ? const SizedBox(
+                            width: 20,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                          : const Text(
+                            'Finish',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
                           ),
-                        )
-                      : const Text(
-                          'Finish',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
                 ),
               ),
             ),
@@ -695,8 +678,6 @@ class _BottomNavButtons extends StatelessWidget {
     );
   }
 }
-
-
 
 class _DialogField extends StatelessWidget {
   final TextEditingController controller;
@@ -712,19 +693,19 @@ class _DialogField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade400),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         filled: true,
         fillColor: const Color(0xFFF7F9FC),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide:
-              const BorderSide(color: Color(0xFFDDE3ED), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFFDDE3ED), width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide:
-              const BorderSide(color: Color(0xFFDDE3ED), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFFDDE3ED), width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -734,8 +715,6 @@ class _DialogField extends StatelessWidget {
     );
   }
 }
-
-
 
 class _PlaceholderInsuranceScreen extends StatelessWidget {
   const _PlaceholderInsuranceScreen();
@@ -749,8 +728,11 @@ class _PlaceholderInsuranceScreen extends StatelessWidget {
         elevation: 0,
         title: const Text('Insurance Details'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Colors.black87, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.black87,
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),

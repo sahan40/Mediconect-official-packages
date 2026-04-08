@@ -13,6 +13,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _fullNameController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _allergiesController = TextEditingController();
   final _contactNameController = TextEditingController();
   final _relationshipController = TextEditingController();
@@ -25,12 +26,13 @@ class _SignupScreenState extends State<SignupScreen> {
     'AB+',
     'AB-',
     'O+',
-    'O-'
+    'O-',
   ];
 
   @override
   void dispose() {
     _fullNameController.dispose();
+    _passwordController.dispose();
     _allergiesController.dispose();
     _contactNameController.dispose();
     _relationshipController.dispose();
@@ -47,9 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1E9FD8),
-            ),
+            colorScheme: const ColorScheme.light(primary: Color(0xFF1E9FD8)),
           ),
           child: child!,
         );
@@ -61,6 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> _handleNext(SignupState state) async {
     FocusScope.of(context).unfocus();
     state.updateFullName(_fullNameController.text);
+    state.updatePassword(_passwordController.text);
     state.updateAllergies(_allergiesController.text);
     state.updateContactName(_contactNameController.text);
     state.updateRelationship(_relationshipController.text);
@@ -79,14 +80,16 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Colors.black87, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.black87,
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -100,7 +103,6 @@ class _SignupScreenState extends State<SignupScreen> {
         centerTitle: true,
       ),
 
-      
       body: SafeArea(
         child: Column(
           children: [
@@ -112,7 +114,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   children: [
                     const SizedBox(height: 16),
 
-                    
                     _StepProgress(
                       stepLabel: 'Medical Profile',
                       stepText: 'Step 1 of 2',
@@ -120,7 +121,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    
                     const Text(
                       "Let's build your profile",
                       style: TextStyle(
@@ -142,7 +142,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: 28),
 
-                   
                     if (state.status == SignupStatus.error &&
                         state.errorMessage != null) ...[
                       _ErrorBanner(
@@ -152,7 +151,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 16),
                     ],
 
-                    
                     _FieldLabel(text: 'Full Name'),
                     const SizedBox(height: 8),
                     _InputField(
@@ -162,7 +160,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -202,7 +199,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    
+                    _FieldLabel(text: 'Password'),
+                    const SizedBox(height: 8),
+                    _InputField(
+                      controller: _passwordController,
+                      hintText: 'Enter password',
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 20),
+
                     _FieldLabel(text: 'Known Allergies'),
                     const SizedBox(height: 8),
                     _TextAreaField(
@@ -262,8 +268,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 }
 
-
-
 class _StepProgress extends StatelessWidget {
   final String stepLabel;
   final String stepText;
@@ -282,16 +286,22 @@ class _StepProgress extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(stepLabel,
-                style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87)),
-            Text(stepText,
-                style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey.shade500,
-                    fontWeight: FontWeight.w500)),
+            Text(
+              stepLabel,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            Text(
+              stepText,
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade500,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -301,15 +311,13 @@ class _StepProgress extends StatelessWidget {
             value: progress,
             minHeight: 6,
             backgroundColor: Colors.grey.shade200,
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(Color(0xFF1E9FD8)),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1E9FD8)),
           ),
         ),
       ],
     );
   }
 }
-
 
 class _FieldLabel extends StatelessWidget {
   final String text;
@@ -328,8 +336,6 @@ class _FieldLabel extends StatelessWidget {
   }
 }
 
-
-
 BoxDecoration _fieldDecoration() {
   return BoxDecoration(
     color: Colors.white,
@@ -338,17 +344,17 @@ BoxDecoration _fieldDecoration() {
   );
 }
 
-
-
 class _InputField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType keyboardType;
+  final bool obscureText;
 
   const _InputField({
     required this.controller,
     required this.hintText,
     this.keyboardType = TextInputType.text,
+    this.obscureText = false,
   });
 
   @override
@@ -358,12 +364,15 @@ class _InputField extends StatelessWidget {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
+        obscureText: obscureText,
         style: const TextStyle(fontSize: 15, color: Colors.black87),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(fontSize: 15, color: Colors.grey.shade400),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -373,15 +382,11 @@ class _InputField extends StatelessWidget {
   }
 }
 
-
 class _DatePickerField extends StatelessWidget {
   final DateTime? selectedDate;
   final VoidCallback onTap;
 
-  const _DatePickerField({
-    required this.selectedDate,
-    required this.onTap,
-  });
+  const _DatePickerField({required this.selectedDate, required this.onTap});
 
   String get _displayText {
     if (selectedDate == null) return 'mm/dd/yyyy';
@@ -404,22 +409,24 @@ class _DatePickerField extends StatelessWidget {
                 _displayText,
                 style: TextStyle(
                   fontSize: 15,
-                  color: selectedDate == null
-                      ? Colors.grey.shade400
-                      : Colors.black87,
+                  color:
+                      selectedDate == null
+                          ? Colors.grey.shade400
+                          : Colors.black87,
                 ),
               ),
             ),
-            Icon(Icons.calendar_today_outlined,
-                size: 18, color: Colors.grey.shade500),
+            Icon(
+              Icons.calendar_today_outlined,
+              size: 18,
+              color: Colors.grey.shade500,
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-
 
 class _BloodTypeDropdown extends StatelessWidget {
   final String value;
@@ -441,12 +448,15 @@ class _BloodTypeDropdown extends StatelessWidget {
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded,
-              color: Colors.grey.shade600),
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: Colors.grey.shade600,
+          ),
           style: const TextStyle(fontSize: 15, color: Colors.black87),
-          items: items
-              .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-              .toList(),
+          items:
+              items
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
           onChanged: (v) {
             if (v != null) onChanged(v);
           },
@@ -456,16 +466,11 @@ class _BloodTypeDropdown extends StatelessWidget {
   }
 }
 
-
-
 class _TextAreaField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
 
-  const _TextAreaField({
-    required this.controller,
-    required this.hintText,
-  });
+  const _TextAreaField({required this.controller, required this.hintText});
 
   @override
   Widget build(BuildContext context) {
@@ -479,8 +484,10 @@ class _TextAreaField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(fontSize: 14, color: Colors.grey.shade400),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -489,8 +496,6 @@ class _TextAreaField extends StatelessWidget {
     );
   }
 }
-
-
 
 class _SecurityBanner extends StatelessWidget {
   const _SecurityBanner();
@@ -507,8 +512,11 @@ class _SecurityBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.verified_user_rounded,
-              color: Color(0xFF1E9FD8), size: 20),
+          const Icon(
+            Icons.verified_user_rounded,
+            color: Color(0xFF1E9FD8),
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -527,16 +535,11 @@ class _SecurityBanner extends StatelessWidget {
   }
 }
 
-
-
 class _BottomNextButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onPressed;
 
-  const _BottomNextButton({
-    required this.isLoading,
-    required this.onPressed,
-  });
+  const _BottomNextButton({required this.isLoading, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -572,30 +575,31 @@ class _BottomNextButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: isLoading
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2.5),
-                  )
-                : const Text(
-                    'Next: Emergency Details',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: 0.2,
+            child:
+                isLoading
+                    ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                    : const Text(
+                      'Next: Medical History',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.2,
+                      ),
                     ),
-                  ),
           ),
         ),
       ),
     );
   }
 }
-
-
 
 class _ErrorBanner extends StatelessWidget {
   final String message;
@@ -614,18 +618,17 @@ class _ErrorBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline,
-              color: Color(0xFFE53E3E), size: 18),
+          const Icon(Icons.error_outline, color: Color(0xFFE53E3E), size: 18),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(message,
-                style:
-                    const TextStyle(fontSize: 13, color: Color(0xFFE53E3E))),
+            child: Text(
+              message,
+              style: const TextStyle(fontSize: 13, color: Color(0xFFE53E3E)),
+            ),
           ),
           GestureDetector(
             onTap: onDismiss,
-            child: const Icon(Icons.close,
-                color: Color(0xFFE53E3E), size: 16),
+            child: const Icon(Icons.close, color: Color(0xFFE53E3E), size: 16),
           ),
         ],
       ),

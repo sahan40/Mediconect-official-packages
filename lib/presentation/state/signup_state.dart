@@ -8,10 +8,10 @@ class SignupState extends ChangeNotifier {
   SignupStatus _status = SignupStatus.idle;
   String? _errorMessage;
 
-  SignupModel  get form         => _form;
-  SignupStatus get status       => _status;
-  String?      get errorMessage => _errorMessage;
-  bool         get isLoading    => _status == SignupStatus.loading;
+  SignupModel get form => _form;
+  SignupStatus get status => _status;
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _status == SignupStatus.loading;
 
   void updateFullName(String value) {
     _form = _form.copyWith(fullName: value);
@@ -20,6 +20,11 @@ class SignupState extends ChangeNotifier {
 
   void updateDateOfBirth(DateTime value) {
     _form = _form.copyWith(dateOfBirth: value);
+    notifyListeners();
+  }
+
+  void updatePassword(String value) {
+    _form = _form.copyWith(password: value);
     notifyListeners();
   }
 
@@ -52,6 +57,12 @@ class SignupState extends ChangeNotifier {
     }
     if (_form.dateOfBirth == null) {
       _errorMessage = 'Date of birth is required.';
+      _status = SignupStatus.error;
+      notifyListeners();
+      return false;
+    }
+    if (_form.password.trim().length < 6) {
+      _errorMessage = 'Password must be at least 6 characters.';
       _status = SignupStatus.error;
       notifyListeners();
       return false;
